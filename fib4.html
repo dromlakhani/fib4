@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIB-4 Score Calculator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">FIB-4 Score Calculator</h1>
+        
+        <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="age">
+                        Age (years)
+                    </label>
+                    <input type="number" id="age" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="ast">
+                        AST (U/L)
+                    </label>
+                    <input type="number" id="ast" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="alt">
+                        ALT (U/L)
+                    </label>
+                    <input type="number" id="alt" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="platelets">
+                        Platelet Count (10⁹/L)
+                    </label>
+                    <input type="number" id="platelets" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+            
+            <button onclick="calculateFIB4()" class="w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
+                Calculate FIB-4 Score
+            </button>
+            
+            <div id="result" class="hidden">
+                <div class="bg-gray-50 rounded-lg p-6 mt-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Results</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <span class="font-semibold">FIB-4 Score:</span>
+                            <span id="fib4-score" class="ml-2"></span>
+                        </div>
+                        <div>
+                            <span class="font-semibold">Interpretation:</span>
+                            <span id="interpretation" class="ml-2"></span>
+                        </div>
+                        <div id="recommendation" class="mt-4 p-4 rounded-lg bg-blue-50 text-blue-800">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateFIB4() {
+            // Get input values
+            const age = parseFloat(document.getElementById('age').value);
+            const ast = parseFloat(document.getElementById('ast').value);
+            const alt = parseFloat(document.getElementById('alt').value);
+            const platelets = parseFloat(document.getElementById('platelets').value);
+            
+            // Validate inputs
+            if (!age || !ast || !alt || !platelets) {
+                alert('Please fill in all fields with valid numbers');
+                return;
+            }
+            
+            // Calculate FIB-4 score
+            // Formula: (Age × AST) / (Platelets × √ALT)
+            const fib4 = (age * ast) / (platelets * Math.sqrt(alt));
+            
+            // Round to 2 decimal places
+            const roundedFib4 = Math.round(fib4 * 100) / 100;
+            
+            // Interpret results
+            let interpretation, recommendation;
+            
+            if (fib4 < 1.45) {
+                interpretation = "Low risk of advanced fibrosis";
+                recommendation = "FIB-4 score indicates a low probability of advanced liver fibrosis. Negative predictive value for advanced fibrosis is 90%.";
+            } else if (fib4 > 3.25) {
+                interpretation = "High risk of advanced fibrosis";
+                recommendation = "FIB-4 score suggests a high probability of advanced liver fibrosis. Consider referral to specialist for further evaluation. Positive predictive value for advanced fibrosis is 65%.";
+            } else {
+                interpretation = "Indeterminate risk";
+                recommendation = "FIB-4 score falls in the indeterminate zone. Consider additional non-invasive tests or specialist referral based on clinical context.";
+            }
+            
+            // Display results
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('fib4-score').textContent = roundedFib4;
+            document.getElementById('interpretation').textContent = interpretation;
+            document.getElementById('recommendation').textContent = recommendation;
+        }
+    </script>
+</body>
+</html>
